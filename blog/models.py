@@ -3,6 +3,21 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
+def filter_posts_by_year(posts_query, year):
+    posts_at_year = posts_query.filter(published_at__year=year).order_by('published_at')
+    return posts_at_year
+
+class PostQuerySet(models.QuerySet):
+    def year(self, year):
+        posts_at_year=self.filter(published_at__year=year).order_by('published_at')
+        return posts_at_year
+
+
+class TagQuerySet(models.QuerySet):
+    def popular(self):
+        return self.annotate(post_count=models.Count('posts')).order_by('-post_count')
+
+
 class Post(models.Model):
     title = models.CharField('Заголовок', max_length=200)
     text = models.TextField('Текст')
@@ -36,6 +51,8 @@ class Post(models.Model):
         verbose_name = 'пост'
         verbose_name_plural = 'посты'
 
+    objects = PostQuerySet.as_manager()
+
 
 class Tag(models.Model):
     title = models.CharField('Тег', max_length=20, unique=True)
@@ -53,6 +70,8 @@ class Tag(models.Model):
         ordering = ['title']
         verbose_name = 'тег'
         verbose_name_plural = 'теги'
+
+    objects = TagQuerySet.as_manager()
 
 
 class Comment(models.Model):

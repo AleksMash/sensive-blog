@@ -14,7 +14,7 @@ class PostQuerySet(models.QuerySet):
 
     def popular(self):
         popular_posts = self.annotate(likes_count=models.Count(
-            'likes', distinct=True)).order_by('-likes_count')
+            'likes')).order_by('-likes_count')
         return popular_posts
 
 

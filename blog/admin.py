@@ -7,6 +7,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'published_at')
     raw_id_fields = ('author', 'likes', 'tags')
 
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     pass
